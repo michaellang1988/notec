@@ -1,0 +1,2 @@
+# notec
+c++ learn node.
