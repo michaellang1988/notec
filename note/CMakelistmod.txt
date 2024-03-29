@@ -1,0 +1,88 @@
+cmake_minimum_required(VERSION 3.26)
+project(my_project)
+
+set(WITH_TEST_MAIN ON) # 是否使用debug模式
+
+set(USE_OPENCV OFF) # 不使用opencv模块
+
+set(CMAKE_CXX_STANDARD 17) # 指定编译使用的C++标准
+
+set(CMAKE_VERBOSE_MAKEFILE on) # 是否显示所有执行的完整编译和链接命令，而不仅仅是简化的输出
+ADD_DEFINITIONS(-D_GLIBCXX_USE_CXX11_ABI=0) # not use cxx11
+set(CMAKE_SKIP_RPATH TRUE) # not use rpath
+
+if (WITH_TEST_MAIN)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pthread")
+    set(CMAKE_BUILD_TYPE Debug) # Debug Release
+else ()
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -fstack-protector-all -fPIC -D_FORTIFY_SOURCE=2 -O2 -s")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pthread -fstack-protector-all  -fPIC -D_FORTIFY_SOURCE=2 -O2 -s")
+    set(CMAKE_SHARED_LINKER_FLAGS "-Wl,-z,relro -Wl,-z,noexecstack -Wl,-z,now -s")
+    set(CMAKE_BUILD_TYPE Release) # Debug Release
+endif()
+
+# 编译目标文件的存放路径
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/binrun)
+set(LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/binrun)
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/binrun)
+
+
+set(BUSINESS_SRC_CODE) # 设置源文件集合
+set(BUSINESS_SRC_INCLUDE) # 设置头文件集合
+set(LINK_LIBRARY_CONTENTS) # 设置需要依赖的二进制库集合
+
+if (USE_OPENCV)
+    ADD_DEFINITIONS(-DCV__ENABLE_C_API_CTORS) # 启用opencv的C API构造函数
+    set(OpenCV_DIR "path/to/opencv")
+    find_package(OpenCV REQUIRED)
+    set(BUSINESS_SRC_INCLUDE
+        ${OpenCV_INCLUDE_DIRS}
+        ${BUSINESS_SRC_INCLUDE}
+        )
+    set(LINK_LIBRARY_CONTENTS
+        # opencv_core
+        # opencv_imgproc
+        ${OpenCV_LIBS}
+        ${LINK_LIBRARY_CONTENTS}
+        )
+endif()
+
+aux_source_directory(${CMAKE_SOURCE_DIR}/test src_test_main) # 给定目录下的所有源文件，不包括子文件夹
+# file(GLOB SOURCE_FILES "src/*.cpp") # 搜索特定源文件
+# file(GLOB_RECURSE SOURCE_FILES "src/*.cpp") # 递归搜索源文件，包括子文件夹
+set(BUSINESS_SRC_CODE
+    ${src_test_main}
+    ${BUSINESS_SRC_CODE}
+    )
+set(BUSINESS_SRC_INCLUDE
+    ${CMAKE_SOURCE_DIR}
+    ${BUSINESS_SRC_INCLUDE}
+    )
+
+if(WITH_TEST_MAIN)
+    add_executable(
+        ${PROJECT_NAME}-test
+        ${BUSINESS_SRC_CODE}
+        )
+
+    target_link_libraries( # Specifies the target library.
+        ${PROJECT_NAME}-test
+        ${LINK_LIBRARY_CONTENTS}
+        )
+else()
+    add_library( # Sets the name of the library.
+        ${PROJECT_NAME}
+
+        # Sets the library as a shared library.
+        SHARED
+
+        # Provides a relative path to your source file(s).
+        ${BUSINESS_SRC_CODE}
+        )
+
+    target_link_libraries( # Specifies the target library.
+        ${PROJECT_NAME}
+        ${LINK_LIBRARY_CONTENTS}
+        )
+endif()

@@ -134,3 +134,97 @@ clang++ -o test demo.cpp
     ```shell
      g++ learn.cpp learn/l_template.cpp
     ```
+
+## vscode多任务，定制指令
+
+1. 在``tasks.json``中增加需要执行的任务指令。
+
+    ```Json
+    {
+        "version": "2.0.0",
+        "tasks": [
+            {
+                "type": "cppbuild",
+                "label": "build C++/python",
+                "command": "/usr/bin/g++",
+                "args": [
+                    "-fdiagnostics-color=always",
+                    "-g",
+                    "${file}",
+                    "-I",
+                    "/home/ez/miniconda3/include/python3.11",
+                    "-o",
+                    "${fileDirname}/target/${fileBasenameNoExtension}.out"
+                ],
+                "options": {
+                    "cwd": "${fileDirname}"
+                },
+                "problemMatcher": [
+                    "$gcc"
+                ],
+                "group": {
+                    "kind": "build",
+                    "isDefault": true
+                },
+                "detail": "调试器生成的任务。"
+            },
+            {
+                "label": "Build C++",
+                "type": "cppbuild",
+                "command": "g++",
+                "args": [
+                    "-fdiagnostics-color=always",
+                    "-g",
+                    "${file}",
+                    "-o",
+                    "${fileDirname}/target/${fileBasenameNoExtension}.out"
+                ],
+                "group": {
+                    "kind": "build",
+                    "isDefault": true
+                },
+                "presentation": {
+                    "echo": true,
+                    "reveal": "always",
+                    "focus": true,
+                    "panel": "dedicated"
+                },
+                "problemMatcher": [
+                    "$gcc"
+                ],
+                "detail": "Compile and run C++ program"
+            },
+            {
+                "label": "run",
+                "dependsOn": [
+                    "Build C++"
+                ],
+                "type": "process",
+                "presentation": {
+                    "echo": true,
+                    "reveal": "always",
+                    "focus": true,
+                    "panel": "shared",
+                    "showReuseMessage": true,
+                    "clear": false
+                },
+                "group": {
+                    "kind": "build",
+                    "isDefault": true
+                },
+                "command": "${fileDirname}/target/${fileBasenameNoExtension}.out",
+                "linux": {
+                    "command": "${fileDirname}/target/${fileBasenameNoExtension}.out"
+                }
+            }
+        ]
+    }
+    ```
+
+2. 这里可以通过``F1``按钮调出运行菜单，选择``Tasks: Build and Run``来选择在``tasks.json``中配置的多种任务指令。任务的名称和``lable``指定的相同。
+
+3. 需要格外注意的是在``tasks.json``中存在多个任务后，``launch.json``中需要明确指定在执行debug前的前置任务是哪个，除非没有前置任务。
+
+    ```Json
+    "preLaunchTask": "build C++/python",
+    ```
