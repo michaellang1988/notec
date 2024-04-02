@@ -35,7 +35,6 @@
                 "-g",
                 "${file}",
                 "-I",
-                "/home/ez/notec/extern/",
                 "/home/ez/miniconda3/include/python3.11",
                 "-o",
                 "${fileDirname}/target/${fileBasenameNoExtension}.out"
