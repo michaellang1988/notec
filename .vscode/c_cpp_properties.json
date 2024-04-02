@@ -4,7 +4,8 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
-                "/home/ez/miniconda3/include/python3.11"
+                "/home/ez/miniconda3/include/python3.11",
+                "/home/ez/notec/extern/"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/clang",

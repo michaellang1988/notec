@@ -49,6 +49,9 @@
         "typeinfo": "cpp",
         "cstring": "cpp",
         "ctime": "cpp",
-        "cinttypes": "cpp"
+        "cinttypes": "cpp",
+        "chrono": "cpp",
+        "ratio": "cpp",
+        "variant": "cpp"
     },
 }
