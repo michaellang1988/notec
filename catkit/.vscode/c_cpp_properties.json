@@ -5,6 +5,8 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "/home/ez/miniconda3/include/python3.11",
+                "/opt/vcpkg/installed/x64-linux/include",
+                "src/**"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/clang",

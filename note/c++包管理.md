@@ -46,3 +46,8 @@ The tar.gz file is no longer needed, remove it:
 
 rm -rf vcpkg.tar.gz
 ```
+
+### 仓库地址
+
++ 默认存放在 ``~/.vcpkg/installed/``
++ 目前安装存放在``/opt/vcpkg/installed/x64-linux/include``

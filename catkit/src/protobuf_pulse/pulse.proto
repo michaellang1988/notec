@@ -1,0 +1,22 @@
+syntax = "proto3";
+message Drag {
+    float time = 1;
+    float offset = 2;
+    float amp = 3;
+    float detune = 4;
+    float freq = 5;
+    float phase = 6;
+    float alpha = 7;
+    float delta = 8;
+    string name = 9;
+    float extra_bias = 10;
+}
+
+
+message AcquireSine {
+    float time = 1;
+    repeated float amp_list = 2;
+    repeated float baseband_freq_list = 3;
+    string name = 4;
+    float extra_bias = 5;
+}
